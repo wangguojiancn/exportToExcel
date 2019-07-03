@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta charset="UTF-8">
+	<title>exportToExcel Demo</title>
+  <script src="./exportToExcel.js"></script>
+</head>
+
+<body>
+
+<div>	
+  <button type="button" onclick="downExcel()">DownLoad</button>
+
+</div>
+<script type="text/javascript">
+
+  var tHeader = [
+    '名称',
+    '数量',
+    '图片'
+  ];
+  var tbody = [
+    {
+      name: 'title1',
+      num: '44',
+      pic: 'http://e.hiphotos.baidu.com/image/h%3D300/sign=907f6e689ddda144c5096ab282b6d009/dc54564e9258d1092f7663c9db58ccbf6c814d30.jpg'
+    },
+    {
+      name: 'title2',
+      num: '黄色',
+      pic: 'http://g.hiphotos.baidu.com/image/h%3D300/sign=342e12b86563f624035d3f03b745eb32/203fb80e7bec54e7f0e0839fb7389b504fc26a27.jpg'
+    },
+    {
+      name: 'title3',
+      num: '22',
+      pic: 'http://f.hiphotos.baidu.com/image/h%3D300/sign=00af05b334f33a87816d061af65d1018/8d5494eef01f3a29f863534d9725bc315d607c8e.jpg'
+    },
+    {
+      name: 'title4',
+      num: '33',
+      pic: 'http://e.hiphotos.baidu.com/image/h%3D300/sign=907f6e689ddda144c5096ab282b6d009/dc54564e9258d1092f7663c9db58ccbf6c814d30.jpg'
+    },
+    {
+      name: 'title5',
+      num: '41',
+      pic: 'http://e.hiphotos.baidu.com/image/h%3D300/sign=907f6e689ddda144c5096ab282b6d009/dc54564e9258d1092f7663c9db58ccbf6c814d30.jpg'
+    }
+  ];
+  function downExcel(){
+    exportToExcel(tHeader, tbody, {
+        name:new Date().getTime(),
+        filename:"table",
+        width: 200,
+        height:150,
+    })
+  }
+
+</script>
+</body>
+</html>
