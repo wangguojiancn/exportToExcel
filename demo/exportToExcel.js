@@ -1,15 +1,48 @@
-﻿var exportToExcel = function (thData, tbData, OptionObj) {
-  var re = /http/, // 检测图片地址
-  		opt;
-  var option = function(){
-    this.name="table"
-    this.filename="table"
-		this.width= 200
-		this.height=30
-  }
+﻿/*
+*   导出数据到EXCEL(包含图片)
+*   exportToExcel(data1,data2,Obj)
+*   data1: 数组 表格头数据 如 ['a','b','c']
+*   data2: 数组 表格主内容数据
+*         - 格式一:数组项为子数组 且与 data1内容一一对应  如 [['a1','a2','a3'],['b1','b2','b3']]
+*         - 格式二:数组项为子对象 对象中的键值对中的值和data1 一一对应  如 [{'a1':1,'a2':2,'a3':3},{'b1':1,'b2':2,'b3':3}]
+*   Obj: 对象 可设置对应参数
+*       - filename : 文件名
+*       - sheetName : sheet名
+*       - width : 图片单元格宽度
+*       - height : 单元格高度
+*/ 
 
-  typeof OptionObj==='object'?opt = OptionObj :opt = new option()
-  console.log(opt.width)
+var exportToExcel = function (thData, tbData, OptionObj) {
+  var re = /http/; // 检测图片地址
+  var opt = {
+      filename: 'table',
+      sheetName: 'table',
+      lineHeight:30,
+      width:200,
+      height:30,
+  }
+  //处理IE浏览器不兼容Object.assign()
+  if (typeof Object.assign != 'function') {
+    Object.assign = function(target) {
+      if (target == null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+      target = Object(target);
+      for (var index = 1; index < arguments.length; index++) {
+        var source = arguments[index];
+        if (source != null) {
+          for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+      }
+      return target;
+    };
+  }
+  //深拷贝数据
+  Object.assign(opt, OptionObj);
 	//生成表头内容
   var thead = '<thead><tr>'
   for (var i = 0; i < thData.length; i++) {
@@ -22,28 +55,40 @@
     tbody += '<tr style="height:' + opt.height + 'px;">'
     // 获取每一行数据
     var row = tbData[j] 
-    for (var key in row) {
-      if (re.test(row[key])) {
-        tbody += '<td style="width:' + opt.width + 'px; text-align: center; vertical-align: middle"><div style="display:inline"><img src=\'' + row[key] + '\' ' + ' ' + 'width=' + '\"' + opt.width + '\"' + ' ></div></td>';
-      } else {
-        tbody += '<td style="text-align:center">' + row[key] + '</td>'
+    if(row instanceof Array){
+      for(var k=0;k<row.length;k++){
+        if (re.test(row[k])) {
+          tbody += '<td style="width:' + opt.width + 'px; text-align: center; vertical-align: middle"><div style="display:inline"><img src=\'' + row[k] + '\' ' + ' ' + 'width=' + '\"' + opt.width + '\"' + ' ></div></td>';
+        } else {
+          tbody += '<td style="text-align:center">' + row[k] + '</td>'
+        }
+      } 
+
+    }else{
+      for (var key in row) {
+        if (re.test(row[key])) {
+          tbody += '<td style="width:' + opt.width + 'px; text-align: center; vertical-align: middle"><div style="display:inline"><img src=\'' + row[key] + '\' ' + ' ' + 'width=' + '\"' + opt.width + '\"' + ' ></div></td>';
+        } else {
+          tbody += '<td style="text-align:center">' + row[key] + '</td>'
+        }
       }
     }
+
     tbody += '</tr>'
   }
   tbody += '</tbody>';
 
   var table = thead + tbody; 
   //导出为表格
-  exportToExcel(table, opt.filename)
+  exportToExcel(table, opt.filename,opt.sheetName)
 
-  function exportToExcel(data, name) {
+  function exportToExcel(data, name,sheetName) {
     var uri = 'data:application/vnd.ms-excel;base64,',
 				isIE = navigator.appVersion.indexOf("MSIE 10") !== -1 || (navigator.userAgent.indexOf("Trident") !== -1 && navigator.userAgent.indexOf("rv:11") !== -1), // this works with IE10 and IE11 both :)
   			template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
 	  		ctx = {
-			    worksheet: name,
-			    table: data
+			    worksheet: sheetName,
+			    table: data,
 		 		}
 	  if (isIE) {
 			if (typeof Blob !== "undefined") {

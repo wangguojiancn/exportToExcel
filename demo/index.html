@@ -23,7 +23,7 @@
   ];
   var tbody = [
     {
-      name: 'title1',
+      sd: 'title1',
       num: '44',
       pic: 'http://e.hiphotos.baidu.com/image/h%3D300/sign=907f6e689ddda144c5096ab282b6d009/dc54564e9258d1092f7663c9db58ccbf6c814d30.jpg'
     },
@@ -48,11 +48,20 @@
       pic: 'http://e.hiphotos.baidu.com/image/h%3D300/sign=907f6e689ddda144c5096ab282b6d009/dc54564e9258d1092f7663c9db58ccbf6c814d30.jpg'
     }
   ];
+   var tbody2 = [
+    [
+      'title1',
+      '44',
+      'http://e.hiphotos.baidu.com/image/h%3D300/sign=907f6e689ddda144c5096ab282b6d009/dc54564e9258d1092f7663c9db58ccbf6c814d30.jpg'
+    ],
+    [
+      'title2',
+      '黄色',
+      'http://g.hiphotos.baidu.com/image/h%3D300/sign=342e12b86563f624035d3f03b745eb32/203fb80e7bec54e7f0e0839fb7389b504fc26a27.jpg'
+    ]
+  ];
   function downExcel(){
-    exportToExcel(tHeader, tbody, {
-        name:new Date().getTime(),
-        filename:"table",
-        width: 200,
+    exportToExcel(tHeader, tbody2, {
         height:150,
     })
   }
